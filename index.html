@@ -10,25 +10,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <style>
-    .error-dot::after {
-      content: "";
-      display: block;
-      background-color: crimson;
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      position: absolute;
-      top: 15px;
-      left: 15px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="bg-gray-800">
-  <div class="container mx-auto py-10 text-gray-400">
-    <div class="mb-5">
-      <h1 class="text-center text-3xl text-green-400">TRÒ CHƠI ĐOÁN CHỮ</h1>
+  <div class="container mx-auto py-2 lg:py-10 text-gray-400">
+    <div class="mb:2 lg:mb-5">
+      <h1 class="text-center text-xl lg:text-3xl text-green-400">TRÒ CHƠI ĐOÁN CHỮ</h1>
       <p class="text-center font-semibold">Nào cùng đoán chữ của ngày hôm nay là gì đây!</p>
     </div>
 
@@ -44,8 +32,7 @@
       class="modal fixed p-8 rounded-lg bg-white w-[300px] top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden">
       <h2 class="text-2xl text-gray-800 text-center font-bold">Oops!</h2>
       <p class="text-center py-4">Lượt đoán của ngày hôm nay đã dùng rồi, bạn vui lòng quay lại vào ngày mai cho lượt
-        mới
-        nhé 😋</p>
+        mới nhé 😋</p>
     </div>
 
     <div id="modal"

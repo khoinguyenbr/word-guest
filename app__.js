@@ -232,6 +232,7 @@
   function showResult(isWin) {
     $('#result').text(todayWord).removeClass('hidden');
     $keyboard.addClass('hidden');
+    isDone = true;
 
     if (!isWin) return;
 
@@ -256,6 +257,7 @@
   initLines(todayWord);
 
   /* GAME LOGIC */
+  let isDone = false;
   let currentLine = 0;
   let currentChar = 0;
   let willNext = false;
@@ -343,6 +345,83 @@
       }
     }
     return false;
+  }
+
+  async function sharing(lines = 6, isWin = false) {
+    let template =
+      '<section class="flex justify-start items-center flex-col p-4">';
+    const block1 = '<div class="w-10 h-10 bg-grey-default rounded-md"></div>';
+    const block2 = '<div class="w-10 h-10 bg-yellow rounded-md"></div>';
+    const block3 = '<div class="w-10 h-10 bg-green rounded-md"></div>';
+    const $lines = $wordSection.find('li');
+
+    template += `<p class="text-center text-grey-dark"><span class="text-green font-bold">VNWORDLE</span> ${
+      isWin ? lines : 'X'
+    }/6</p>`;
+    template += '<ul class="p-4 space-y-2">';
+
+    for (let l = 0; l < lines; l++) {
+      const $line = $lines.eq(l);
+      const $cells = $line.find('div');
+
+      template += '<li class="flex space-x-2">';
+      for (let c = 0; c < todayWord.length; c++) {
+        const $cell = $cells.eq(c);
+        if ($cell.hasClass('bg-grey-default')) {
+          template += block1;
+        } else if ($cell.hasClass('bg-yellow')) {
+          template += block2;
+        } else {
+          template += block3;
+        }
+      }
+      template += '</li>';
+    }
+    template += '</ul></section>';
+
+    const temp = $wordSection.html();
+    $wordSection.html(template);
+
+    await delay(200);
+
+    html2canvas($wordSection.find('section').get(0)).then(async function (
+      canvas
+    ) {
+      try {
+        const dataUrl = canvas.toDataURL();
+        const blob = await (await fetch(dataUrl)).blob();
+        const filesArray = [
+          new File([blob], 'vnwordleresult.jpg', {
+            type: 'image/jpeg',
+            // type: blob.type
+            // lastModified: new Date().getTime(),
+          }),
+        ];
+
+        $wordSection.html(temp);
+
+        const shareData = {
+          title: `VNWORDLE ${isWin ? lines : 'X'}/6`,
+          files: filesArray,
+          text: `VNWORDLE ${isWin ? lines : 'X'}/6`,
+          // url: SITE_URL,
+        };
+
+        const os = getMobileOS();
+
+        if (navigator.share && (os === 'Android' || os === 'iOS')) {
+          navigator.share(shareData);
+        } else {
+          await copyBlobToClipboard(blob);
+          $('#copied').removeClass('hidden');
+          await delay(1000);
+          $('#copied').fadeOut();
+        }
+      } catch (e) {
+        console.log({ e });
+        console.log('Error in sharing');
+      }
+    });
   }
 
   /* GUEST WORD */
@@ -520,6 +599,11 @@
 
   $('#share').on('click', function () {
     const os = getMobileOS();
+
+    if (isDone) {
+      sharing(currentLine + 1, isWin);
+      return;
+    }
 
     if (navigator.share && (os === 'Android' || os === 'iOS')) {
       navigator.share({
